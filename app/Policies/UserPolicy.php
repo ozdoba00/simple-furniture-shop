@@ -11,8 +11,8 @@ class UserPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function index(User $user): bool
+    public function adminResources(User $user)
     {
-        return $user->role_id == Role::ADMINISTRATOR; //Admin
+        return $user->role_id == Role::ADMINISTRATOR ? Response::allow() : Response::deny('No access'); // Admin
     }
 }

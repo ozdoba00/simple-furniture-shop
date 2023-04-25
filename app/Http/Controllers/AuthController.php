@@ -16,15 +16,21 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        $request->validated();
-
-        $password = Hash::make($request->password);
-        $user = User::create([
-            'email' => $request->email,
-            'password' => $password,
-            'name' => $request->name,
-            'last_name' => $request->last_name
-        ]);
+        try 
+        {
+            $request->validated();
+            $password = Hash::make($request->password);
+            $user = User::create([
+                'email' => $request->email,
+                'password' => $password,
+                'name' => $request->name,
+                'last_name' => $request->last_name
+            ]);
+        } 
+        catch (\Throwable $th) 
+        {
+            abort(400, $th->getMessage());
+        }
 
         return response()->json($user);
     }
@@ -36,18 +42,24 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $request->validated();
+        try 
+        {
+            $request->validated();
+            $credentials = $request->getCredentials();
 
-        $credentials = $request->getCredentials();
+            if (!auth()->attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Given data is invalid'
+                ]);
+            }
 
-        if (!auth()->attempt($credentials)) {
-            return response()->json([
-                'message' => 'Given data is invalid'
-            ]);
+            $user = User::where('email', $request->email)->first();
+            $authToken = $user->createToken('auth-token')->plainTextToken;
+        } 
+        catch (\Throwable $th) 
+        {
+            abort(400, $th->getMessage());
         }
-
-        $user = User::where('email', $request->email)->first();
-        $authToken = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'access_token' => $authToken

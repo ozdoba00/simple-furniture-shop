@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
@@ -20,6 +19,18 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
-    Route::resource('admin/users', UserController::class);
+
+    // Admin section
+    Route::prefix('admin')->group(function()
+    {
+        // Users manager
+        Route::prefix('users')->group(function()
+        {
+            Route::get('/', [UserController::class, 'index']);
+            Route::post('store', [UserController::class, 'store']);
+            Route::get('show/{id}', [UserController::class, 'show']);
+            Route::put('update/{id}', [UserController::class, 'adminUpdate']);
+        });
+    });
 });
 
