@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OfferCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,16 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
             Route::post('store', [UserController::class, 'store']);
             Route::get('show/{id}', [UserController::class, 'show']);
             Route::put('update/{id}', [UserController::class, 'adminUpdate']);
+        });
+
+        // Categories manager
+        Route::prefix('categories')->group(function()
+        {
+            Route::get('/', [OfferCategoryController::class, 'index']);
+            Route::post('store', [OfferCategoryController::class, 'store']);
+            Route::put('update/{id}', [UserController::class, 'update']);
+
+
         });
     });
 });
