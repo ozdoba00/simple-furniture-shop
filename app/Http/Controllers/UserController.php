@@ -11,7 +11,7 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('adminResources', User::class);
-        $users = User::all();
+        $users = User::all('id', 'name', 'last_name', 'email');
 
         return response()->json($users);
 
