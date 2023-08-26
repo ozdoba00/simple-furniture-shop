@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OfferCategoryController;
+use App\Http\Controllers\OfferController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,8 @@ use App\Http\Controllers\OfferCategoryController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/products', [OfferController::class, 'index']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
 
@@ -40,6 +43,13 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
             Route::post('store', [OfferCategoryController::class, 'store']);
             Route::put('update/{id}', [UserController::class, 'update']);
 
+
+        });
+
+        Route::prefix('products')->group(function()
+        {
+            Route::get('/', [OfferController::class, 'adminIndex']);
+            Route::post('store', [OfferController::class, 'store']);
 
         });
     });
