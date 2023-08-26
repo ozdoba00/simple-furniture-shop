@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('offer_categories', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('root_id')->nullable();
+            $table->unsignedBigInteger('root_id')->nullable();
             $table->string('name');
             $table->string('symbol');
             $table->unique(['root_id', 'symbol']);
